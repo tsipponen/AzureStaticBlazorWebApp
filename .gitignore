@@ -1,0 +1,8 @@
+.vs/
+.vs/
+Api/bin/
+Api/obj/
+Data/bin
+Data/obj
+WebAssemblyClient/bin
+WebAssemblyClient/obj
