@@ -1,7 +1,11 @@
 ﻿@page "/chess"
-<h3>ChessData</h3>
+
+@using Data
 
 @inject HttpClient HttpClient
+@inject IChessDataService ChessDataService
+
+<h3>ChessData</h3>
 
 @if (games == null)
 {
@@ -17,61 +21,63 @@ else
     <button @onclick="SearchChessData">
         Search!
     </button>
-
     <table class="chess-table">
-        <tbody>
-            @foreach (var game in games)
-            {
-                ToggleFlipData(game.Black.IsQueriedPlayer);
+                <tbody>
+    @foreach (var game in games)
+    {
+    ToggleFlipData(game.Black.IsQueriedPlayer);
                 <table class="customTiny">
-                    <tr>
-                        <td>Turn: @game.Turn</td>
-                    </tr>
-                    @if (@game.Black.IsQueriedPlayer)
-                    {
-                        <tr>
-                            <td>White player name: <b>@game.White.Name</b></td>
-                        </tr>
-                    }
-                    else
-                    {
-                        <tr>
-                            <td>Black player name: <b>@game.Black.Name</b></td>
-                        </tr>
-                    }
+                <tr>
+                <td>Turn: @game.Turn</td>
+                </tr>
+    @if (@game.Black.IsQueriedPlayer)
+    {
+                <tr>
+                <td>White player name: <b>@game.White.Name</b></td>
+                </tr>
+}
+                else
+    {
+                <tr>
+                <td>Black player name: <b>@game.Black.Name</b></td>
+                </tr>
+}
 
-                    <img src="https://www.chess.com/dynboard?fen=@game.Fen&board=green&piece=neo&size=3&flip=@flipData"
-                        style="border:1px solid black; width: 300px; height: 300px;" />
-                    @if (@game.White.IsQueriedPlayer)
-                    {
-                        <tr>
-                            <td>White player name: <b>@game.White.Name</b></td>
-                        </tr>
-                    }
-                    else
-                    {
-                        <tr>
-                            <td>Black player name: <b>@game.Black.Name</b></td>
-                        </tr>
-                    }
+                <img src="https://www.chess.com/dynboard?fen=@game.Fen&board=green&piece=neo&size=3&flip=@flipData"
+    style="border:1px solid black; width: 300px; height: 300px;" />
+    @if (@game.White.IsQueriedPlayer)
+    {
+                <tr>
+                <td>White player name: <b>@game.White.Name</b></td>
+                </tr>
+}
+                else
+    {
+                <tr>
+                <td>Black player name: <b>@game.Black.Name</b></td>
+                </tr>
+}
 
                 </table>
-            }
-        </tbody>
-    </table>
+}
+                </tbody>
+                </table>
+
+    <p>@answer</p>
 }
 
 @code {
-    private static List<ChessDataUnit> games;
+    private static List<Data.ChessData> games;
 
     private int flipData = 0;
 
     private string username = "tinysibs";
     private string queriedPlayer = "";
+    private static string answer = "";
 
     protected override async Task OnInitializedAsync()
     {
-        games = await HttpClient.GetFromJsonAsync<List<ChessDataUnit>>($"pub/player/{username}/games");
+        games = await ChessDataService.GetResponse(username);
     }
 
     private void ToggleFlipData(bool isQueriedPlayer)
@@ -88,7 +94,7 @@ else
 
     private async Task SearchChessData()
     {
-        games = await HttpClient.GetFromJsonAsync<List<ChessDataUnit>>($"pub/player/{username}/games");
+        games = await ChessDataService.GetResponse(username);
     }
 
     private async Task Enter(KeyboardEventArgs e)
@@ -97,42 +103,9 @@ else
         {
             if (!string.IsNullOrEmpty(queriedPlayer))
             {
-                games = await HttpClient.GetFromJsonAsync<List<ChessDataUnit>>($"pub/player/{username}/games");
+                games = await ChessDataService.GetResponse(username);
             }
         }
     }
-
-    public class ChessDataResponse
-    {
-
-        public string Turn { get; set; }
-        public string Fen { get; set; }
-        public string White { get; set; }
-        public string Black { get; set; }
-
-    }
-
-    public class ChessDataUnit
-    {
-        public string Turn { get; set; }
-        public string Fen { get; set; }
-        public WhitePlayer White { get; set; }
-        public BlackPlayer Black { get; set; }
-    }
-
-    public class WhitePlayer
-    {
-        public string Name { get; set; }
-        public string Url { get; set; }
-        public bool IsQueriedPlayer { get; set; }
-    }
-
-    public class BlackPlayer
-    {
-        public string Name { get; set; }
-        public string Url { get; set; }
-        public bool IsQueriedPlayer { get; set; }
-    }
-
 
 }

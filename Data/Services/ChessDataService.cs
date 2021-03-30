@@ -3,9 +3,8 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using System.Collections.Generic;
-using Data;
 
-namespace Api
+namespace Data
 {
     public class ChessDataService : IChessDataService
     {

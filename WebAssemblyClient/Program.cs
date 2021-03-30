@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Data;
 
 
 namespace WebAssemblyClient
@@ -16,8 +16,11 @@ namespace WebAssemblyClient
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://api.chess.com/") });
+            builder.Services.AddScoped<IChessDataService, ChessDataService>();
 
-            await builder.Build().RunAsync();
+            var host = builder.Build();
+
+            await host.RunAsync();
         }
     }
 }
