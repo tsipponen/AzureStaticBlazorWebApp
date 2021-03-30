@@ -1,7 +1,5 @@
 ﻿@page "/chess"
 
-@using Data
-
 @inject HttpClient HttpClient
 @inject IChessDataService ChessDataService
 
@@ -94,7 +92,7 @@ else
 
     private async Task SearchChessData()
     {
-        games = await ChessDataService.GetResponse(username);
+        games = await ChessDataService.GetResponse(queriedPlayer);
     }
 
     private async Task Enter(KeyboardEventArgs e)
@@ -103,7 +101,7 @@ else
         {
             if (!string.IsNullOrEmpty(queriedPlayer))
             {
-                games = await ChessDataService.GetResponse(username);
+                games = await ChessDataService.GetResponse(queriedPlayer);
             }
         }
     }
