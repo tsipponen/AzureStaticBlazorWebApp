@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "Api\Api.csproj", "{1
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{582C3F62-7455-4524-A8BF-478B4A954BB8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAssemblyClient", "WebAssemblyClient\WebAssemblyClient.csproj", "{43008957-3CD6-47EC-8338-EBC94C8B2BFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAssemblyClient", "WebAssemblyClient\WebAssemblyClient.csproj", "{43008957-3CD6-47EC-8338-EBC94C8B2BFC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

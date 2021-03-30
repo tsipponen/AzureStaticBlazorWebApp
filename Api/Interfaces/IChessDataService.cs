@@ -4,5 +4,5 @@ using Data;
 
 public interface IChessDataService
 {
-    public Task<List<Data.ChessData>> GetResponse(string username);
+    public Task<List<ChessData>> GetResponse(string username);
 }

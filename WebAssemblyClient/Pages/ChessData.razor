@@ -1,0 +1,138 @@
+﻿@page "/chess"
+<h3>ChessData</h3>
+
+@inject HttpClient HttpClient
+
+@if (games == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <p>Enter a player you want to search from Chess.com (default: tinysibs)</p>
+    <p>
+        <input placeholder="Enter name" type="text" @bind-value="queriedPlayer" @onkeyup="@Enter" />
+    </p>
+
+    <button @onclick="SearchChessData">
+        Search!
+    </button>
+
+    <table class="chess-table">
+        <tbody>
+            @foreach (var game in games)
+            {
+                ToggleFlipData(game.Black.IsQueriedPlayer);
+                <table class="customTiny">
+                    <tr>
+                        <td>Turn: @game.Turn</td>
+                    </tr>
+                    @if (@game.Black.IsQueriedPlayer)
+                    {
+                        <tr>
+                            <td>White player name: <b>@game.White.Name</b></td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td>Black player name: <b>@game.Black.Name</b></td>
+                        </tr>
+                    }
+
+                    <img src="https://www.chess.com/dynboard?fen=@game.Fen&board=green&piece=neo&size=3&flip=@flipData"
+                        style="border:1px solid black; width: 300px; height: 300px;" />
+                    @if (@game.White.IsQueriedPlayer)
+                    {
+                        <tr>
+                            <td>White player name: <b>@game.White.Name</b></td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td>Black player name: <b>@game.Black.Name</b></td>
+                        </tr>
+                    }
+
+                </table>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private static List<ChessDataUnit> games;
+
+    private int flipData = 0;
+
+    private string username = "tinysibs";
+    private string queriedPlayer = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        games = await HttpClient.GetFromJsonAsync<List<ChessDataUnit>>($"pub/player/{username}/games");
+    }
+
+    private void ToggleFlipData(bool isQueriedPlayer)
+    {
+        if (isQueriedPlayer)
+        {
+            flipData = 1;
+        }
+        else
+        {
+            flipData = 0;
+        }
+    }
+
+    private async Task SearchChessData()
+    {
+        games = await HttpClient.GetFromJsonAsync<List<ChessDataUnit>>($"pub/player/{username}/games");
+    }
+
+    private async Task Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            if (!string.IsNullOrEmpty(queriedPlayer))
+            {
+                games = await HttpClient.GetFromJsonAsync<List<ChessDataUnit>>($"pub/player/{username}/games");
+            }
+        }
+    }
+
+    public class ChessDataResponse
+    {
+
+        public string Turn { get; set; }
+        public string Fen { get; set; }
+        public string White { get; set; }
+        public string Black { get; set; }
+
+    }
+
+    public class ChessDataUnit
+    {
+        public string Turn { get; set; }
+        public string Fen { get; set; }
+        public WhitePlayer White { get; set; }
+        public BlackPlayer Black { get; set; }
+    }
+
+    public class WhitePlayer
+    {
+        public string Name { get; set; }
+        public string Url { get; set; }
+        public bool IsQueriedPlayer { get; set; }
+    }
+
+    public class BlackPlayer
+    {
+        public string Name { get; set; }
+        public string Url { get; set; }
+        public bool IsQueriedPlayer { get; set; }
+    }
+
+
+}
